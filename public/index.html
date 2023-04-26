@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.25/datatables.min.css" />
+        <link rel="stylesheet" type="text/css" href="style.css" />
+        <title>Stock</title>
+    </head>
+
+    <body>
+        <table id="example"></table>
+        <!-- formulario de insertar nuevo usuario, se debe colocar domain_id nombre apellido dni email quota password -->
+        <form id="form-usuario">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="apellido" name="apellido" required>
+            <label for="dni">DNI:</label>
+            <input type="text" id="dni" name="dni" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="quota">Quota:</label>
+            <input type="text" id="quota" name="quota" required>
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Enviar</button>
+        </form>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+        <script src="script.js"></script>
+    </body>
+
+</html>
