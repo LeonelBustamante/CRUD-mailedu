@@ -1,0 +1,160 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+    --azul: #17468e;
+    --blanco: #ffffff;
+    --gris-oscuro: #333333;
+}
+
+header {
+    align-items: center;
+    background-color: var(--azul);
+    display: flex;
+    height: 60px;
+    margin-bottom: 1em;
+    justify-content: start;
+    width: 100%;
+}
+
+header a {
+    height: 100%;
+    padding: 0 2em;
+}
+
+header img {
+    height: 90%;
+    object-fit: contain;
+    width: auto;
+}
+
+footer {
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    background-color: var(--gris-oscuro);
+    display: flex;
+    height: 30px;
+    justify-content: center;
+    width: 100%;
+}
+
+footer a {
+    color: var(--blanco);
+    text-decoration: underline;
+}
+
+footer p {
+    color: var(--blanco);
+    font-size: 1em;
+    margin: 0 1em;
+}
+
+.contenedor-principal {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.table-usuario {
+    flex: 1;
+    width: 100%;
+}
+
+.form-usuario {
+    flex: 2;
+    width: 100%;
+    margin-left: 2em;
+    margin-right: 2em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.form-usuario input {
+    width: 90%;
+    height: 2em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0 1em;
+    font-size: 1em;
+    outline: none;
+    margin-bottom: 10px;
+}
+
+.form-usuario label {
+    width: 100%;
+    text-align: start;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.btn-enviar {
+    color: #fff;
+    width: 100%;
+    height: 2em;
+    border-radius: 5px;
+    font-size: 1.2em;
+    background-color: #337ab7;
+    border-color: #2e6da4;
+    outline: none;
+}
+
+.btn-enviar:hover {
+    color: #fff;
+    background-color: #286090;
+    border-color: #204d74;
+}
+
+.btns-accion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 2em;
+}
+
+.btn {
+    flex: 1;
+    margin: 0 1em;
+    padding: 0.5em 1em;
+    height: 100%;
+}
+
+.btn-editar {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+
+.btn-editar:hover {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
+}
+
+.btn-eliminar {
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+.btn-eliminar:hover {
+    color: #fff;
+    background-color: #c9302c;
+    border-color: #ac2925;
+}
+
+.btn-desactivar {
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+}
+
+.btn-desactivar:hover {
+    color: #fff;
+    background-color: #ec971f;
+    border-color: #d58512;
+}

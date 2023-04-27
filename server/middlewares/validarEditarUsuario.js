@@ -1,4 +1,4 @@
-const { body } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 const validarEditarUsuario = [
     body('nombre').trim().notEmpty().withMessage('El nombre es requerido').isAlpha().withMessage('El nombre solo debe contener letras'),

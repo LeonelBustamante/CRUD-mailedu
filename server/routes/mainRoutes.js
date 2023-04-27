@@ -1,19 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const validarNuevoUsuario = require('../middlewares/validarNuevoUsuario');
-const validarEditarUsuario = require('../middlewares/validarEditarUsuario');
-const { crearUsuario, obtenerUsuarios, editarUsuario, eliminarUsuario } = require('../controllers/mainController.js');
+//const validarEditarUsuario = require('../middlewares/validarEditarUsuario');
+const { crearUsuario, obtenerUsuarios, } = require('../controllers/mainController.js');
 
-// get página principal
-router.get('obtener-usuarios', obtenerUsuarios);
+router.get('/obtener-usuario', obtenerUsuarios);
 
-// post nuevo usuario
-router.post('nuevo-usuario', validarNuevoUsuario, crearUsuario);
+router.post('/nuevo-usuario', validarNuevoUsuario, crearUsuario);
 
-// patch editar usuario
-router.patch('editar-usuario/:id', validarEditarUsuario, editarUsuario);
+//router.patch('/editar-usuario/:email', validarEditarUsuario, editarUsuario);
 
-// delete eliminar usuario
-router.delete('eliminar-usuario/:id', eliminarUsuario);
+//router.delete('/eliminar-usuario/:email', eliminarUsuario);
+
+//router.patch('/desactivar-usuario/:email', desactivarUsuario);
 
 module.exports = router;
