@@ -7,7 +7,7 @@ loginForm.addEventListener('submit', (event) => {
         password: loginForm.pwd.value
     };
 
-    console.log(data);
+    console.log("datos enviados desde el front", data);
 
     fetch('api/login', {
         method: 'POST',
@@ -15,7 +15,10 @@ loginForm.addEventListener('submit', (event) => {
         body: JSON.stringify(data)
     })
         .then(response => { if (response.ok) { return response.text(); } })
-        .catch(error => { error.text.then(errorMessage => { alert(errorMessage); }); });
-
-    location.reload();
+        .catch(error => {
+            error.text.then(errorMessage => {
+                alert(errorMessage);
+            });
+        });
 });
+

@@ -29,6 +29,24 @@ header img {
     width: auto;
 }
 
+.btn-logout {
+    color: var(--blanco);
+    background-color: var(--azul);
+    font-size: 1.2em;
+    padding: 0 2em;
+    height: 100%;
+    border: none;
+    margin-left: auto;
+    margin-right: 2em;
+    text-decoration: none;
+}
+
+.btn-logout:hover {
+    color: var(--azul);
+    background-color: var(--blanco);
+    cursor: pointer;
+}
+
 footer {
     align-items: center;
     position: fixed;

@@ -158,3 +158,16 @@ function cambiarEstadoUsuario(activo, email) {
     location.reload();
 }
 
+let logoutButton = document.querySelector('#logout');
+logoutButton.addEventListener('click', (event) => {
+    event.preventDefault();
+
+    fetch('logout', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+        .then(response => { if (response.ok) { return response.text(); } })
+        .catch(error => { error.text.then(errorMessage => { alert(errorMessage); }); });
+
+    location.reload();
+});

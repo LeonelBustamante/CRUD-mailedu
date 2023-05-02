@@ -1,4 +1,5 @@
 const connection = require('../config/db-connection.js');
+const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const errorServidor = "Error en el servidor"
@@ -76,7 +77,9 @@ async function login(req, res) {
             async (error, results, fields) => {
                 if (results.length > 0) {
                     let comparacion = await bcrypt.compare(password, results[0].password);
+
                     if (comparacion) {
+                        console.log("login exitoso");
                         req.session.loggedin = true;
                         req.session.email = email;
                         res.redirect('/home');
@@ -93,4 +96,12 @@ async function login(req, res) {
     }
 }
 
-module.exports = { obtenerUsuarios, crearUsuario, cambiarEstadoUsuario, eliminarUsuario, editarUsuario, login };
+function homeLoader(req, res) {
+    res.sendFile(path.join(__dirname, '../public/home.html'));
+}
+
+function logout(req, res) {
+    req.session.destroy();
+    res.redirect('/');
+}
+module.exports = { obtenerUsuarios, crearUsuario, cambiarEstadoUsuario, eliminarUsuario, editarUsuario, login, homeLoader, logout };
