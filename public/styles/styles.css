@@ -54,23 +54,22 @@ footer p {
 .contenedor-principal {
     display: flex;
     width: 100%;
-    flex-wrap: wrap;
 }
 
 .table-usuario {
-    flex: 1;
-    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
 }
 
 .form-usuario {
-    flex: 2;
-    width: 100%;
     margin-left: 2em;
     margin-right: 2em;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+    min-width: 250px;
 }
 
 .form-usuario input {
@@ -147,13 +146,13 @@ footer p {
     border-color: #ac2925;
 }
 
-.btn-desactivar {
+.btn-estado {
     color: #fff;
     background-color: #f0ad4e;
     border-color: #eea236;
 }
 
-.btn-desactivar:hover {
+.btn-estado:hover {
     color: #fff;
     background-color: #ec971f;
     border-color: #d58512;

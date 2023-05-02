@@ -30,7 +30,7 @@ $(document).ready(async function () {
             title: 'ACCIONES',
             data: null,
             defaultContent:
-                '<div class="btns-accion"><button class="btn btn-editar">Editar</button><button class="btn btn-eliminar">Eliminar</button><button class="btn btn-desactivar">Desactivar</button></div>'
+                '<div class="btns-accion"><button class="btn btn-editar">Editar</button><button class="btn btn-eliminar">Eliminar</button><button class="btn btn-estado">Estado</button></div>'
         }
     ];
 
@@ -48,22 +48,40 @@ $(document).ready(async function () {
         });
 
         $('#example').on('click', '.btn-editar', function () {
-            /* alert para confirmar eliminacion */
+            const row = table.row($(this).parents('tr')).data();
+            document.querySelector('#nombre').value = row.nombre;
+            document.querySelector('#apellido').value = row.apellido;
+            document.querySelector('#dni').value = row.dni;
+            document.querySelector('#email').value = row.email;
+            let quota = document.querySelector('#quota');
+            quota.type = "text";
+            quota.value = row.quota;
+            let pwd = document.querySelector('#password')
+            pwd.removeAttribute("required");
+            pwd.value = "";
+            let formulario = document.querySelector('#form-usuario');
+            formulario.id = "form-usuario-editar";
+            editarUsuario(row.email);
+        });
 
+        $('#example').on('click', '.btn-estado', function () {
             if (confirm("¿Está seguro que desea editar el usuario?")) {
                 const row = table.row($(this).parents('tr')).data();
-
+                const email = row.email;
+                const activo = row.activo;
+                cambiarEstadoUsuario(activo, email);
             }
         });
 
         $('#example').on('click', '.btn-eliminar', function () {
             const row = table.row($(this).parents('tr')).data();
+            const email = row.email;
+            eliminarUsuario(email);
         });
     });
 });
 
 const form = document.querySelector('#form-usuario');
-
 form.addEventListener('submit', (event) => {
     event.preventDefault();
 
@@ -81,14 +99,62 @@ form.addEventListener('submit', (event) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     })
-        .then(response => {
-            console.log("front",response);
-            if (response.ok) { return response.text(); }
-        })
-        .catch(error => {
-            console.log(error);
-            error.text.then(errorMessage => {
-                alert(errorMessage);
-            });
-        });
+        .then(response => { if (response.ok) { return response.text(); } })
+        .catch(error => { error.text.then(errorMessage => { alert(errorMessage); }); });
+
+    location.reload();
 });
+
+function eliminarUsuario(email) {
+    const data = { email: email };
+    if (confirm("¿Está seguro que desea eliminar el usuario?")) {
+        fetch('api/eliminar-usuario/' + email, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+            .then(response => { if (response.ok) { return response.text(); } })
+            .catch(error => { error.text.then(errorMessage => { alert(errorMessage); }); });
+    }
+
+    location.reload();
+}
+
+function editarUsuario(email) {
+    const form = document.querySelector('#form-usuario-editar');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const data = {
+            nombre: form.nombre.value,
+            apellido: form.apellido.value,
+            dni: form.dni.value,
+            email: form.email.value,
+            quota: form.quota.value,
+        };
+
+        fetch('api/editar-usuario/' + email, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+
+            .then(response => { if (response.ok) { return response.text(); } })
+            .catch(error => { error.text.then(errorMessage => { alert(errorMessage); }); });
+
+        location.reload();
+    });
+}
+
+function cambiarEstadoUsuario(activo, email) {
+    const data = { email: email };
+    fetch('api/cambiar-estado-usuario/' + email, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(response => { if (response.ok) { return response.text(); } })
+        .catch(error => { error.text.then(errorMessage => { alert(errorMessage); }); });
+    location.reload();
+}
+

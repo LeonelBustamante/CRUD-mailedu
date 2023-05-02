@@ -10,8 +10,6 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-process.on('exit', () => {
-    connection.end();
-});
+process.on('exit', () => { connection.end(); });
 
 module.exports = connection;
