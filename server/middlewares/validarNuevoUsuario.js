@@ -8,7 +8,6 @@ const validarNuevoUsuario = [
   body('password').trim().isLength({ min: 8 }).withMessage('La contraseña debe tener al menos 8 caracteres'),
 
   (req, res, next) => {
-    console.log("***VALIDANDO LOS SIGUIENTES DATOS***\n", req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });

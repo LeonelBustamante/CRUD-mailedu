@@ -1,8 +1,12 @@
 async function getData() {
     try {
-        const response = await fetch("api/obtener-usuario");
+        const response = await fetch("obtener-usuarios");
         const data = await response.json();
-        return data;
+        if (response.ok) {
+            return data;
+        } else {
+            return []
+        }
     } catch (error) { console.error(error); }
 }
 

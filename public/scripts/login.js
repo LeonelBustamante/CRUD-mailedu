@@ -1,15 +1,15 @@
-let loginForm = document.querySelector('#login');
-loginForm.addEventListener('submit', (event) => {
+let form = document.querySelector('#login');
+form.addEventListener('submit', (event) => {
     event.preventDefault();
 
     const data = {
-        email: loginForm.email.value,
-        password: loginForm.pwd.value
+        email: form.email.value,
+        password: form.password.value
     };
 
     console.log("datos enviados desde el front", data);
 
-    fetch('api/login', {
+    fetch('login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -20,5 +20,8 @@ loginForm.addEventListener('submit', (event) => {
                 alert(errorMessage);
             });
         });
+
+    location.href = '/';
+
 });
 

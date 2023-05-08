@@ -1,49 +1,35 @@
-// Requirements:
 const express = require('express');
-const path = require('path');
-const session = require('express-session');
-const router = require('./routes/mainRoutes');
-const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 
-// Initialize dotenv
-dotenv.config();
-
-// Server
 const app = express();
-const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(session({
-    secret: process.env.SESSION_SECRET || 'secret',
-    resave: true,
-    saveUninitialized: true
-}));
+// Configuración de la carpeta public para archivos estáticos.
+app.use(express.static('public'));
 
-app.use(express.static(path.join(__dirname, '../public')));
+// Procesamiento de datos enviados desde forms.
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// Set headers
+// Trabajo con las cookies.
+app.use(cookieParser());
+
+// Llamada al router.
+app.use('/', require('./routes/router'));
+
+// Middleware para eliminar la caché.
 app.use((req, res, next) => {
-    res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+    if (!req.user) { res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate'); }
     next();
 });
 
-app.use(express.json());
-
-// Routes
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/index.html'));
-});
-
-// API routes
-app.use('/api', router);
-
-// Error handler
+// Manejo de errores.
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
 
-// Server
-app.listen(port, () => {
-    console.log(`Running at http://localhost:${port}`);
+// Inicialización del servidor.
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
