@@ -1,4 +1,8 @@
 const connection = require('../config/db-connection.js');
+const fs = require('fs');
+const papelera = "/vmail/neuquen.edu.ar/papelera";
+const storage = "/vmail/neuquen.edu.ar/";
+
 require('dotenv').config();
 
 const errorServidor = "Error en el servidor"
@@ -76,6 +80,15 @@ exports.eliminarUsuario = (req, res) => {
     const values = req.params.email;
     const query = `DELETE FROM ${process.env.DB_TABLE_USERS} WHERE email = ?`;
     conexionBD(query, values, res);
+    const username = values.split('@')[0];
+
+    fs.rename(storage + username, papelera + username, function (err) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Successfully renamed the directory.");
+        }
+    });
 }
 
 exports.cambiarEstadoUsuario = (req, res) => {
