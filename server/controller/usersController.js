@@ -1,15 +1,27 @@
-const connection = require('../config/db-connection.js');
+const db = require('../config/db-connection.js');
 const fs = require('fs');
-const papelera = "/vmail/neuquen.edu.ar/papelera";
-const storage = "/vmail/neuquen.edu.ar/";
+const bcryptjs = require('bcryptjs');
+const { exec } = require('child_process');
 
 require('dotenv').config();
+
+const PAPELERA = process.env.PAPELERA;
+const STORAGE = process.env.STORAGE;
+const TABLA_USUARIO = process.env.DB_TABLE_USERS;
+
 
 const errorServidor = "Error en el servidor"
 const okServidor = "cambios en la base de datos"
 
+function conexionBD(query, values, res) {
+    db.query(query, values, (error, results, fields) => {
+        if (error) { res.status(500).send(errorServidor) }
+        else { res.status(200).send(okServidor); }
+    });
+}
+
 exports.obtenerUsuarios = (req, res) => {
-    connection.query(`SELECT * FROM ${process.env.DB_TABLE_USERS}`, (error, results, fields) => {
+    db.query(`SELECT * FROM ${TABLA_USUARIO}`, (error, results, fields) => {
         if (error) { res.status(500).send(error) }
         else { res.status(200).send(results); }
     });
@@ -19,100 +31,63 @@ exports.crearUsuario = (req, res) => {
     const { nombre, apellido, dni, email, quota, password } = req.body;
     const values = [nombre, apellido, dni, email, quota, password];
 
-    const query = `
-        INSERT INTO ${process.env.DB_TABLE_USERS} 
-        (nombre , apellido  , dni   , email , quota , password  ) VALUES 
-        (?      , ?         , ?     , ?     , ?     , ?         )  `;
-
+    const query = `INSERT INTO ${TABLA_USUARIO} 
+    (nombre , apellido  , dni   , email , quota , password  ) VALUES 
+    (?      , ?         , ?     , ?     , ?     , ?         )`;
     conexionBD(query, values, res);
+    
+    const value = `ENCRYPT(${password}, CONCAT('$6$', SUBSTRING(SHA(RAND()), -16)))`;
+    const encryptQuery = `UPDATE ${TABLA_USUARIO} SET password = ? WHERE email = ?`;
+    conexionBD(encryptQuery, [value, email], res);
 }
 
 exports.editarUsuario = (req, res) => {
     const param = req.params.email;
-    console.log(req.body);
-    console.log(req.params);
-    const updateFields = [];
-    const queryParams = [];
+    const { nombre, apellido, dni, email, quota, password } = req.body;
+    const campos = [];
+    const values = [];
 
-    if (req.body.nombre) {
-        updateFields.push('nombre = ?');
-        queryParams.push(req.body.nombre);
-    }
+    if (nombre) { campos.push('nombre = ?'); values.push(nombre); }
+    if (apellido) { campos.push('apellido = ?'); values.push(apellido); }
+    if (dni) { campos.push('dni = ?'); values.push(dni); }
+    if (email) { campos.push('email = ?'); values.push(email); }
+    if (quota) { campos.push('quota = ?'); values.push(quota); }
+    if (password) { campos.push('password = ?'); values.push(password); }
 
-    if (req.body.apellido) {
-        updateFields.push('apellido = ?');
-        queryParams.push(req.body.apellido);
-    }
+    const query = `UPDATE ${TABLA_USUARIO} SET
+    ${campos.join(', ')} WHERE 
+    email = ? `;
 
-    if (req.body.dni) {
-        updateFields.push('dni = ?');
-        queryParams.push(req.body.dni);
-    }
+    values.push(param);
 
-    if (req.body.email) {
-        updateFields.push('email = ?');
-        queryParams.push(req.body.email);
-    }
-
-    if (req.body.quota) {
-        updateFields.push('quota = ?');
-        queryParams.push(req.body.quota);
-    }
-
-    if (req.body.password) {
-        updateFields.push('password = ?');
-        queryParams.push(req.body.password);
-    }
-
-    const updateQuery = `
-      UPDATE ${process.env.DB_TABLE_USERS} SET
-      ${updateFields.join(', ')}
-      WHERE 
-      email = ?
-    `;
-
-    queryParams.push(param);
-
-    conexionBD(updateQuery, queryParams, res);
+    conexionBD(query, values, res);
 }
 
 exports.eliminarUsuario = (req, res) => {
-    const values = req.params.email;
-    const query = `DELETE FROM ${process.env.DB_TABLE_USERS} WHERE email = ?`;
-    conexionBD(query, values, res);
-    const username = values.split('@')[0];
+    const email = req.params.email;
+    const query = `DELETE FROM ${TABLA_USUARIO} WHERE email = ?`;
+    conexionBD(query, email, res);
 
-    fs.rename(storage + username, papelera + username, function (err) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Successfully renamed the directory.");
-        }
+    const username = email.split('@')[0];
+
+    fs.rename(STORAGE + username, PAPELERA + username, (err) => {
+        if (err) { res.status(500).send(errorServidor); }
+        else { res.status(200).send(okServidor); }
     });
 }
 
 exports.cambiarEstadoUsuario = (req, res) => {
     let email = req.params.email;
 
-    connection.query(`SELECT activo FROM ${process.env.DB_TABLE_USERS} WHERE email = ?`, [email], (error, results, fields) => {
-        if (error) {
-            res.status(500).send(errorServidor)
-        } else {
-            let estadoActual = results[0].activo;
-            if (estadoActual == 1) { estadoActual = 0; }
-            else { estadoActual = 1; }
-
+    db.query(`SELECT activo FROM ${TABLA_USUARIO} WHERE email = ?`, [email], (error, results, fields) => {
+        if (error) { res.status(500).send(errorServidor) }
+        else {
+            let estadoActual = results[0].activo == 1 ? 0 : 1;
+            const query = `UPDATE ${TABLA_USUARIO} SET activo = ? WHERE email = ?`;
             const values = [estadoActual, email];
-            const query = `UPDATE ${process.env.DB_TABLE_USERS} SET activo = ? WHERE email = ?`;
             conexionBD(query, values, res);
         }
     });
 }
 
 
-function conexionBD(query, values, res) {
-    connection.query(query, values, (error, results, fields) => {
-        if (error) { res.status(500).send(errorServidor) }
-        else { res.status(200).send(okServidor); }
-    });
-}
