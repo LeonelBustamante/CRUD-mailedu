@@ -48,6 +48,7 @@ exports.login = async (req, res) => {
 
 exports.isAuthenticated = async (req, res, next) => {
     if (req.cookies.jwt) {
+        console.log(`${req.user} se ha logueado correctamente`);
         const decodificada = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRETO)
         db.query(`SELECT * FROM ${TABLA_ADMIN} WHERE id = ? `, [decodificada.id], (error, results) => {
             if (!results) { return next() }
@@ -55,11 +56,13 @@ exports.isAuthenticated = async (req, res, next) => {
             return next()
         })
     } else {
+        console.log('No se ha logueado correctamente');
         res.redirect('/login')
     }
 }
 
 exports.logout = (req, res) => {
+    console.log(`${req.user} se ha deslogueado correctamente`);
     res.clearCookie('jwt')
     return res.redirect('/login')
 }
