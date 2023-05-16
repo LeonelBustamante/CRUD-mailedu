@@ -14,7 +14,7 @@ header {
     display: flex;
     height: 60px;
     margin-bottom: 1em;
-    justify-content: start;
+    justify-content: space-between;
     width: 100%;
 }
 
@@ -33,7 +33,8 @@ header img {
     color: var(--blanco);
     background-color: var(--azul);
     font-size: 1.2em;
-    padding: 0 2em;
+    border-radius: 20px;
+    padding: 0.1em 2em;
     height: 100%;
     border: none;
     margin-left: auto;
@@ -43,6 +44,7 @@ header img {
 
 .btn-logout:hover {
     color: var(--azul);
+    padding: 0.1em 2em;
     background-color: var(--blanco);
     cursor: pointer;
 }
@@ -69,29 +71,27 @@ footer p {
     margin: 0 1em;
 }
 
+.table-usuario {
+    width: 100%;
+}
+
 .contenedor-principal {
     display: flex;
     width: 100%;
 }
 
-.table-usuario {
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-}
-
 .form-usuario {
+    min-width: 300px;
     margin-left: 2em;
     margin-right: 2em;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    min-width: 250px;
 }
 
 .form-usuario input {
-    width: 90%;
+    width: 100%;
     height: 2em;
     border: 1px solid #ccc;
     border-radius: 5px;

@@ -74,17 +74,13 @@ html {
 
 .copy {
     position: absolute;
-    bottom: 10px;
-    bottom: 10px;
-    font-size: 12px;
     color: white;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    bottom: 10px;
+    left: 10px;
 }
 
 .copy a {
     color: white;
-    font-size: 20px;
     text-decoration: none;
-    text-align: center;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    font-size: 14px;
 }

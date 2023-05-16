@@ -14,14 +14,16 @@ form.addEventListener('submit', (event) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     })
-        .then(response => { if (response.ok) { return response.text(); } })
-        .catch(error => {
-            error.text.then(errorMessage => {
-                alert(errorMessage);
-            });
-        });
-
-    location.href = '/';
+        .then(response => { return response.json() })
+        .then(data => {
+            console.log("datos recibidos en el front", data);
+            if (data.status == 200) {
+                window.location.href = '/';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.log(error));
 
 });
 

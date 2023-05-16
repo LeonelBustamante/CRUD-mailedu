@@ -43,12 +43,12 @@ $(document).ready(async function () {
             data: llenarDataTable(data),
             columns: columns,
             "responsive": true,
-            "paging": false,
+            "paging": true,
             "searching": true,
             "stateSave": true,
             "language": { "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/Spanish.json" },
             "info": false,
-            "fixedHeader": true
+            "fixedHeader": true,
         });
 
         $('#example').on('click', '.btn-editar', function () {
@@ -98,7 +98,9 @@ form.addEventListener('submit', (event) => {
         password: form.password.value
     };
 
-    fetch('api/nuevo-usuario', {
+    console.log(data);
+
+    fetch('nuevo-usuario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -111,14 +113,16 @@ form.addEventListener('submit', (event) => {
 
 function eliminarUsuario(email) {
     const data = { email: email };
-    if (confirm("¿Está seguro que desea eliminar el usuario?")) {
-        fetch('api/eliminar-usuario/' + email, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        })
-            .then(response => { if (response.ok) { return response.text(); } })
-            .catch(error => { error.text.then(errorMessage => { alert(errorMessage); }); });
+    if (confirm(`Está seguro que desea eliminar el ${email}`)) {
+        if (confirm(`¿Completamente seguro de eliminar el ${email}?`)) {
+            fetch('eliminar-usuario/' + email, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(response => { if (response.ok) { return response.text(); } })
+                .catch(error => { error.text.then(errorMessage => { alert(errorMessage); }); });
+        }
     }
 
     location.reload();
@@ -137,7 +141,7 @@ function editarUsuario(email) {
             quota: form.quota.value,
         };
 
-        fetch('api/editar-usuario/' + email, {
+        fetch('editar-usuario/' + email, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -152,7 +156,7 @@ function editarUsuario(email) {
 
 function cambiarEstadoUsuario(activo, email) {
     const data = { email: email };
-    fetch('api/cambiar-estado-usuario/' + email, {
+    fetch('cambiar-estado-usuario/' + email, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -175,3 +179,63 @@ logoutButton.addEventListener('click', (event) => {
 
     location.reload();
 });
+
+let nombre = document.querySelector('#nombre');
+let apellido = document.querySelector('#apellido');
+let mail = document.querySelector('#email');
+
+nombre.addEventListener('focus', formularioDefault);
+apellido.addEventListener('change', crearCorreo);
+
+function formularioDefault() {
+    let quota = document.querySelector('#quota').value = 1;
+    let pwd = document.querySelector('#password').value = generarPassword();
+}
+
+async function crearCorreo() {
+    let nombre = document.querySelector('#nombre').value;
+    let apellido = document.querySelector('#apellido').value;
+    let email = document.querySelector('#email');
+
+    let primerApellido = apellido.split(' ')[0];
+
+
+    nombre.toLowerCase();
+    primerApellido.toLowerCase();
+
+    let mail = nombre[0] + primerApellido + "@neuquen.edu.ar";
+    mail = mail.toLowerCase();
+    email.value = mail;
+    chequeoCorreo();
+}
+
+function generarPassword() {
+    let longitud = 8;
+    let caracteres = "abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+    let contraseña = "";
+    for (let i = 0; i < longitud; i++) contraseña += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+    return contraseña;
+}
+
+
+const chequeoCorreo = async () => {
+    const response = await fetch('obtener-usuario/' + mail.value, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+    const data = await response.json();
+    console.log(data);
+    if (data[0]) {
+        document.querySelector('#email').style.borderColor = "red";
+        document.querySelector('#email').style.borderWidth = "2px";
+        document.querySelector('#enviar').style.backgroundColor = 'gray';
+        document.querySelector('#enviar').style.borderColor = "grays";
+        document.querySelector('#enviar').disabled = true;
+    } else {
+        document.querySelector('#email').style.borderColor = "green";
+        document.querySelector('#email').style.borderWidth = "2px";
+        document.querySelector('#enviar').disabled = false;
+    }
+}
+
+mail.addEventListener('change', chequeoCorreo);
